@@ -1,0 +1,624 @@
+package jumpingalien.model;
+
+import jumpingalien.util.Sprite;
+
+/**
+ * 
+ * A class describing Mazub (the main character in the game Jumping Alien),
+ * involving his position.
+ * 
+ * @author Ruben
+ *
+ */
+public class Mazub {
+
+	private int x;
+	private int y;
+	
+	/**
+	 * Initializes this new Mazub with the given x-coordinate and y-coordinate and sprites.
+	 * 
+	 * @param 	x
+	 * 			The x-coordinate for this new Mazub.
+	 * @param 	y
+	 * 			The y-coordinate for this new Mazub.
+	 * @param	sprites
+	 * 			The sprites for this new Mazub.
+	 * @post	The x-coordinate, y-coordinate and sprites of this new Mazub are equal to the given values.
+	 * 			| GetX() == x && GetY() == y && GetSprites() == sprites
+	 * @post	The horizontal and vertical velocity of this Mazub are set to 0.
+	 * 			| GetCurrentHorizontalVelocity() == 0 && GetCurrentVerticalVelocity == 0
+	 * @post	The Currently selected sprite of this new Mazub, is the sprite at 0 in the given array of sprites.
+	 * 			| GetCurrentSprite() == sprites[0] 
+	 * @post	This new Mazub will defaultly be facing to the right.
+	 * 			| orientationIsRight()
+	 */
+	public Mazub(int x, int y, Sprite[] sprites) {
+		SetX(x);
+		SetY(y);
+		SetSprites(sprites);
+		SetCurrentHorizontalVelocity(0.);
+		SetCurrentVerticalVelocity(0.);
+		SetCurrentSpriteIndex(0);
+		setOrientationRight();
+	}
+	
+	/**
+	 * Get the x-coordinate of this Mazub. 
+	 */
+	public int GetX() {
+		return x;
+	}
+	
+	/**
+	 * Get the y-coordinate of this Mazub.
+	 */
+	public int GetY() {
+		return y;
+	}
+	
+	/**
+	 * Set the x-coordinate of this Mazub.
+	 * 
+	 * @param 	x
+	 * 			The x-coordinate to be set.
+	 * 
+	 * @throws	IllegalArgumentException
+	 * 			The given x-coordinate is not a valid x-coordinate.
+	 * 			| !isValidXCoordinate
+	 */
+	public void SetX(int x) {
+		if (!isValidXCoordinate(x))
+			throw new IllegalArgumentException();
+		this.x = x;
+	}
+	
+	/**
+	 * Set the y-coordinate of this Mazub.
+	 * 
+	 * @param 	y
+	 * 			The y-coordinate to be set.
+	 * 
+	 * @throws	IllegalArgumentException
+	 * 			The given y-coordinate is not a valid y-coordinate.
+	 * 			| !isValidYCoordinate
+	 */
+	public void SetY(int y) {
+		if (!isValidYCoordinate(y))
+			throw new IllegalArgumentException();
+		this.y = y;
+	}
+	
+	/**
+	 * Returns whether the given x-coordinate is valid or not.
+	 * 
+	 * @param	x
+	 * 			The x-coordinate to be checked.
+	 * 
+	 * @return 	False if the given x-coordinate is smaller then the smallest allowed y-coordinate.
+	 * 			| x < worldXMin
+	 *			False if the given x-coordinate is larger then the largest allowed x-coordinate.
+	 * 			| x > worldXMax
+	 * 			True in all other cases.
+	 */
+	private boolean isValidXCoordinate(int x) {
+		return !(x > Constants.worldXMax || x < Constants.worldXMin);
+	}
+	
+	/**
+	 * Returns whether the given y-coordinate is valid or not.
+	 * 
+	 * @param	y
+	 * 			The y-coordinate to be checked.
+	 * @return	False if the given y-coordinate is smaller then the smallest allowed y-coordinate.
+	 * 			| y < worldYMin
+	 * 			False if the given y-coordinate is larger then the largest allowed y-coordinate.
+	 * 			| y > worldYMax
+	 * 			True in all other cases
+	 */
+	private boolean isValidYCoordinate(int y) {
+		return  !(y > Constants.worldYMax || y < Constants.worldYMin);
+	}
+	
+	/*
+	 * A variable representing whether Mazub is facing right or not.
+	 */
+	private boolean orientationIsRight;
+	
+	/**
+	 * Returns whether this Mazub is facing right or not.
+	 */
+	public boolean orientationIsRight() {
+		return orientationIsRight;
+	}
+	
+	/**
+	 * Returns whether this Mazub is facing left or not.
+	 */
+	public boolean orientationIsLeft() {
+		return !orientationIsRight;
+	}
+	
+	/**
+	 * Sets the orientation of this Mazub to be facing right.
+	 * @post	Mazub is facing right.
+	 * 			| orientationIsRight()
+	 */
+	public void setOrientationRight() {
+		orientationIsRight = true;
+	}	
+	
+	/**
+	 * Sets the orientation of this Mazub to be facing left.
+	 * @post	Mazub is facing left.
+	 * 			| orientationIsLeft()
+	 */
+	public void setOrientationLeft() {
+		orientationIsRight = false;
+	}
+	
+	/*
+	 * A variable describing the horizontal velocity of this Mazub.
+	 */
+	private double horizontalVelocity;
+	
+	/*
+	 * A variable describing whether this Mazub is moving or not.
+	 */
+	private boolean isMoving = true;
+	
+	/**
+	 * Returns the current horizontal velocity of this Mazub.
+	 */
+	public double GetCurrentHorizontalVelocity() {
+		return horizontalVelocity;
+	}
+	
+	/**
+	 * Sets the horizontal velocity of this Mazub.
+	 * @param 	v
+	 * 			The horizontal velocity for this Mazub.
+	 */
+	private void SetCurrentHorizontalVelocity(double v) {
+		horizontalVelocity = v;
+	}
+	
+	/**
+	 * Returns the maximal horizontal velocity this Mazub can have.
+	 * 
+	 * @return	If this Mazub is not ducking, return 3.
+	 * @return	If this Mazub is ducking, return 1.
+	 */
+	private double GetMaxHorizontalVelocity() {
+		if (!IsDucking())
+			return Constants.mazubMaxHorizontalVelocityNoDuck;
+		else
+			return Constants.mazubMaxHorizontalVelocityDucking;
+	}
+	
+	/**
+	 * Starts movement for this Mazub.
+	 * 
+	 * @post	This Mazub is now moving.
+	 * 			| isMoving()
+	 * @post	If this Mazub is oriented to the right, the horizontal velocity of this Mazub is equal to its initial velocity
+	 * 			| GetCurrentHorizontalVelocity() == mazubInitialHorizontalVelocity
+	 * @post	If this Mazub is oriented to the left, the horizontal velocity of this Mazub is equal to the negative of its initial velocity
+	 * 			| GetCurrentHorizontalVelocity() == - mazubInitialHorizontalVelocity
+	 */
+	public void StartMove() {
+		if (orientationIsRight())
+			SetCurrentHorizontalVelocity(Constants.mazubInitialHorizontalVelocity);
+		else
+			SetCurrentHorizontalVelocity(-Constants.mazubInitialHorizontalVelocity);
+		isMoving = true;
+	}
+	
+	/**
+	 * Ends movement for this Mazub.
+	 * 
+	 * @post	This Mazub is not moving
+	 * 			| !IsMoving()
+	 * @post	The velocity of this Mazub is equal to 0.
+	 * 			| GetCurrentHorizontalVelocity() == 0
+	 */
+	public void EndMove() {
+		SetCurrentHorizontalVelocity(0.);
+		isMoving = false;
+	}
+	
+	/**
+	 * Returns whether this Mazub is moving or not.
+	 */
+	public boolean isMoving() {
+		return isMoving;
+	}
+	
+	/**
+	 * Returns whether this Mazub is at maximum velocity or not.
+	 */
+	private boolean isAtMaxVelocity() {
+		return (GetCurrentHorizontalVelocity() == GetMaxHorizontalVelocity() || GetCurrentHorizontalVelocity() == -GetMaxHorizontalVelocity());
+	}
+	
+	/**
+	 * Returns the horizontal acceleration of this Mazub.
+	 * 
+	 * @return	If this Mazub is moving right, the acceleration standard horizontal acceleration.
+	 * 			| Constants.mazubHorizontalAcceleration
+	 * @return	If this Mazub is moving left, the acceleration is the negative of the standard horizontal acceleration.
+	 * 			| -Constants.mazubHorizontalAcceleration
+	 * @return	If this mazub is not moving, the acceleration is 0.
+	 */
+	public double GetHorizontalAcceleration() {
+		if (isMoving())
+			if (orientationIsRight())
+				return Constants.mazubHorizontalAcceleration;
+			else
+				return -Constants.mazubHorizontalAcceleration;
+		else
+			return 0.;
+	}
+	
+	/**
+	 * Calculates and returns the new horizontal velocity of this mazub, based on a timedifference dt.
+	 * 
+	 * @param 	dt
+	 * 			The timedifference this mazub has moved over.
+	 * @return	If this Mazub is not moving, the new horizontal velocity is 0.
+	 * @return	If this Mazub is moving and is not at the maximum horizontal velocity, the new horizontal velocity can be calculated with the folowing fomula : 
+	 * 			Vnew = Vcurrent + A * dt
+	 * 			| GetCurrentHorizontalVelocity + mazubHorizontalAcceleration * dt
+	 * @return	If this Mazub is moving right and is at the maximum velocity, or the new velocity is larger then the maximum,
+	 * 			then the new velocity is equal to the maximum velocity.
+	 * 			| GetMaxHorizontalVelocity()
+	 * @return	If this Mazub is moving left and is at the maximum velocity, or the new velocity is smaller then the maximum,
+	 * 			then the new velocity is equal to the maximum velocity.
+	 * 			| -GetMaxHorizontalVelocity()
+	 */
+	private double newHorizontalVelocity(double dt) {
+		
+		if (dt < 0)
+			return 0.;
+		
+		if (!isMoving())
+			return 0.;
+		
+		double newVelocity;
+		
+		newVelocity = GetCurrentHorizontalVelocity() + GetHorizontalAcceleration() * dt;
+	
+		if (newVelocity > GetMaxHorizontalVelocity())
+			return GetMaxHorizontalVelocity();
+		else if (newVelocity < -GetMaxHorizontalVelocity())
+			return -GetMaxHorizontalVelocity();
+		else
+			return newVelocity;
+	}
+	
+	/*
+	 * A variable describing the vertical velocity of this Mazub
+	 */
+	private double verticalVelocity;
+	
+	/**
+	 * Returns the current vertical velocity of this Mazub.
+	 */
+	public double GetCurrentVerticalVelocity() {
+		return verticalVelocity;
+	}
+	
+	/**
+	 * Sets the current vertical velocity of this Mazub.
+	 * 
+	 * @param 	v
+	 * 			The vertical velocity to be set for this Mazub.
+	 */
+	private void SetCurrentVerticalVelocity(double v) {
+		verticalVelocity = v;
+	}
+	
+	/**
+	 * Starts the jump for this Mazub.
+	 * 
+	 * @post	The vertical velocity of this Mazub is now equal to to the initial vertical velocity.
+	 * 			| GetCurrentVerticalVelocity() == mazubInitialVerticalVelocity
+	 */
+	public void startJump() {
+		SetCurrentVerticalVelocity(Constants.mazubInitialVerticalVelocity);
+	}
+	
+	/**
+	 * Ends the jump for this Mazub.
+	 * 
+	 * @post	If the vertical velocity of this Mazub is larger then 0, the vertical velocity is set to 0, otherwise it stays unchanged.
+	 * 			| GetCurrentVelocity() <= 0
+	 */
+	public void endJump() {
+		if (GetCurrentVerticalVelocity() > 0)
+			SetCurrentVerticalVelocity(0);
+	}
+	
+	/**
+	 * Returns whether this Mazub is falling or not.
+	 * A Mazub is falling if he is not touching the ground.
+	 */
+	private boolean isFalling() {
+		return (GetY() > 0);
+	}
+	
+	/**
+	 * Returns the vertical acceleration of this Mazub.
+	 * 
+	 * @return	If this Mazub is falling, the vertical acceleration of this Mazub is equal to the standard vertical acceleration.
+	 * 			| GetVerticalAcceleration == mazubVerticalAcceleration
+	 * @return	If this Mazub is not falling, the vertical acceleration is equal to 0.
+	 * 			| GetVerticalAcceleration = 0
+	 */
+	public double GetVerticalAcceleration() {
+		if (isFalling())
+			return Constants.mazubVerticalAcceleration;
+		else
+			return 0.;
+	}
+	
+	/**
+	 * Calculates and returns the new vertical velocity of this Mazub after a movement over time difference dt.
+	 * 
+	 * @param 	dt
+	 * 			The time differnce this Mazub has mover over.
+	 * @return	If this Mazub is not falling, the vertical velocity is equal to 0.
+	 * @return	If this Mazub is falling, the vertical velocity can be calculated with the following formula :
+	 * 			Vnew = Vcurrent + A * dt
+	 * 			| GetCurrentVerticalVelocity + mazubVerticalAcceleration * dt
+	 */
+	private double newVerticalVelocity(double dt) {
+		
+		if (dt < 0)
+			return 0.;
+		if (!isFalling())
+			return 0.;
+		
+		double newVelocity = GetCurrentVerticalVelocity() + Constants.mazubVerticalAcceleration * dt;
+		return newVelocity;
+	}
+	
+	/**
+	 * Calculates the new y-coordinate after this Mazub has moved over a time difference dt.
+	 * 
+	 * @param 	dt
+	 * 			The time difference this Mazub has moved over.
+	 * @return	If this Mazub is not falling, it is on the floor and therefore his y-coordinate is equal to 0.
+	 * 			| GetY() == 0
+	 * @return	If this Mazub is falling, its new y-coordinate can be calculated with the following formula : 
+	 * 			Ynew = Vcurrent + (dt + A * dt^ 2) / 2
+	 * 			| GetY() = GetCurrentVerticalVelocity() * dt + 0.5 * GetVerticalAcceleration() * dt * dt
+	 */
+	private int GetYAfterMove(double dt) {
+		
+		int newY = 0;
+		
+		if (!isValidTimeDifference(dt))
+			return GetY();
+		
+		if (!isFalling())
+			return newY;
+		
+		newY = GetY() + (int) Math.floor(GetCurrentVerticalVelocity() * dt + 0.5 * GetVerticalAcceleration() * dt * dt);
+		
+		return newY;
+	}
+	
+	/**
+	 * Calculates and returns the new x-coordinate after this Mazub has moved over a time difference dt.
+	 * 
+	 * @param 	dt
+	 * 			The time difference this Mazub has moved over.
+	 * @return	If this Mazub is not moving, the new x-coordinate is equal to its current x-coordinate.
+	 * 			| GetX()
+	 * @return	If this Mazub is moving at the maximum velocity, his new x-coordinate after time difference dt can be calculated with the following formula : 
+	 * 			Xnew = Xcurrent + Vcurrent * dt
+	 * 			| GetX() + GetCurrentHorizontalVelocity() * dt
+	 * @return	If this Mazub is moving below the maximum velocity, his new x-coordinate after time difference dt can be calculated with the following formula :
+	 * 			Xnew = Xcurrent + Vcurrent * dt + (A * dt^2) / 2
+	 * 			| GetX() + GetCurrentHorizontalVelocity * dt + GetHorizontalAcceleration() * dt * dt
+	 */
+	private int GetXAfterMove(double dt) {
+		
+		if (!isValidTimeDifference(dt))
+			return GetX();
+		
+		if (!isMoving())
+			return GetX();
+		
+		int newX = 0;
+		
+		if (isAtMaxVelocity())
+			newX = GetX() + (int) Math.floor(GetCurrentHorizontalVelocity() * dt);
+		else
+			newX = (int) Math.floor(GetX() + GetCurrentHorizontalVelocity() * dt + 0.5 * GetHorizontalAcceleration() * dt * dt);
+		
+		return newX;
+	} 
+	
+	/**
+	 * Advances the time over a time differnce dt for this Mazub, performing all its corresponding movements.
+	 * 
+	 * @param 	dt
+	 * 			The time difference to advance the time over.
+	 * @throws	IllegalArgumentException
+	 * 			The time difference is not valid.
+	 * 			| !isValidTimeDifference(dt)
+	 * @post	The x-coordinate and y-coordinate of this Mazub are set corresponding to the movement made over the time difference dt.
+	 * 			| GetX() == GetXAfterMove(dt) && GetY() == GetYAfterMove(dt)
+	 * @post	The horizontal and vertical velocity of this Mazub are set corresponding to the movement made over the time difference dt.
+	 * 			| GetCurrentHorizontalVelocity() == newHorizontalVelocity(dt) &&
+	 * 			| GetCurrentVerticalVelocity() == newVerticalVelocity(dt)
+	 */
+	public void AdvanceTime(double dt) {
+		
+		//if (!isValidTimeDifference(dt))
+				//throw new IllegalArgumentException();
+		
+		//if (isMoving()) {
+			SetX(GetXAfterMove(dt));
+			SetCurrentHorizontalVelocity(newHorizontalVelocity(dt));
+		//}
+			
+		//if (isFalling()) {
+			SetY(GetYAfterMove(dt));
+			SetCurrentVerticalVelocity(newVerticalVelocity(dt));
+		//}
+			
+	}
+	
+	/**
+	 * returns whether the given time difference is valid or not.
+	 * 
+	 * @param 	dt
+	 * 			The time difference to be checked.
+	 * @return	False if the time difference is smaller then 0.
+	 * @return	False if the time difference is not a valid number.
+	 * 			| Double.isNaN(dt)
+	 * @return	True in all other cases.
+	 */
+	private boolean isValidTimeDifference(double dt) {
+		if (dt < 0)
+			return false;
+		else if (Double.isNaN(dt))
+			return false;
+		else
+			return true;
+	}
+	
+	/*
+	 * A variable describing whether this Mazub is ducking or not.
+	 */
+	private boolean isDucking;
+	
+	/**
+	 * Returns whether this Mazub is ducking or not.
+	 */
+	public boolean IsDucking() {
+		return isDucking;
+	}
+	
+	/**
+	 * Starts the duck for this Mazub.
+	 * 
+	 * @post	This Mazub is now ducking.
+	 * 			| IsDucking()
+	 */
+	public void startDuck() {
+		isDucking = true;
+	}
+	
+	/**
+	 * Ends the duck for this Mazub
+	 * 
+	 * @post	This Mazub is not ducking.
+	 * 			| !isDucking
+	 */
+	public void endDuck() {
+		isDucking = false;
+	}
+	
+	/*
+	 * An array containing all the sprites of this Mazub.
+	 */
+	private Sprite[] sprites;
+	
+	/*
+	 * A variable describing the index of the current sprite.
+	 */
+	private int currentSpriteIndex;
+	
+	/**
+	 * Sets the sprites of this mazub.
+	 * 
+	 * @param 	sprites
+	 * 			The sprites to be set for this Mazub
+	 */
+	private void SetSprites(Sprite[] sprites) {
+		this.sprites = sprites;
+	}
+	
+	/**
+	 * Returns a clone of the array of sprites of this Mazub
+	 */
+	public Sprite[] GetSprites() {
+		return sprites.clone();
+	}
+	
+	/**
+	 * Returns the number of sprites this Mazub has.
+	 */
+	public int GetNbSprites() {
+		return GetSprites().length;
+	}
+	
+	/**
+	 * Returns the sprite at the given index in the array of sprites of this Mazub.
+	 * 
+	 * @param 	n
+	 * 			The index of the requested sprite.
+	 * @return	The sprite at index n in the array of sprites of this Mazub.
+	 * 			| GetSprites()[n]
+	 */
+	public Sprite GetSpriteAt(int n) {
+		return GetSprites().clone()[n];
+	}
+	
+	/**
+	 * Sets the sprite at the given index in the array of sprites of this Mazub to the given sprite.
+	 * 
+	 * @param 	n
+	 * 			The index of the sprite to be set.
+	 * @param 	sprite
+	 * 			The sprite to be set at index n.
+	 * @post	The array of sprites now contains the given sprite at index n.
+	 * 			| GetSpriteAt(n) == sprite
+	 */
+	private void SetSpriteAt(int n, Sprite sprite) {
+		sprites[n] = sprite;
+	}
+	
+	/**
+	 * Returns whether this Mazub can have the given amount of sprites.
+	 * 
+	 * @param 	n
+	 * 			The amount of sprites to be checked.
+	 * @return	True if the given amount is larger or equal to 10.
+	 * 			| n >= 10
+	 */
+	private boolean canHaveAsNbSprites(int n) {
+		return (n >= 10);
+	}
+	
+	/**
+	 * Returns the index of the currently selected sprite.
+	 */
+	private int GetCurrentSpriteIndex() {
+		return currentSpriteIndex;
+	}
+	
+	/**
+	 * Sets the index of the currently selected sprite to the given index.
+	 * 
+	 * @param 	n
+	 * 			The index to be set.
+	 * @post	The sprite at n in the array of sprites of this Mazub is now selected.
+	 * 			| GetCurrentSprite() == GetSpriteAt(n)
+	 */
+	private void SetCurrentSpriteIndex(int n) {
+		currentSpriteIndex = n;
+	}
+	
+	/**
+	 * Returns the currently selected sprite.
+	 */
+	public Sprite GetCurrentSprite() {
+		return GetSpriteAt(GetCurrentSpriteIndex());
+	}
+	
+}

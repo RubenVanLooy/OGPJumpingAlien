@@ -1,0 +1,22 @@
+package jumpingalien.model;
+
+/**
+ * @Value
+ * 
+ * A class containing constants that apply to any Mazub and the world arround it.
+ * 
+ * @author Ruben
+ */
+public class Constants {
+	
+	public final static int worldXMin = 0;
+	public final static int worldXMax = 1023;
+	public final static int worldYMin = 0;
+	public final static int worldYMax = 767;
+	public final static double mazubHorizontalAcceleration = 0.9;
+	public final static double mazubMaxHorizontalVelocityNoDuck = 3.;
+	public final static double mazubMaxHorizontalVelocityDucking = 1.;
+	public final static double mazubInitialHorizontalVelocity = 1.;
+	public final static double mazubInitialVerticalVelocity = 8.;
+	public final static double mazubVerticalAcceleration = -10.;
+}

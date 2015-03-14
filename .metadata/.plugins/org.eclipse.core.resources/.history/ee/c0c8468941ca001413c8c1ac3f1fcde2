@@ -1,0 +1,7 @@
+package jumpingalien.model;
+
+public class Constants {
+
+	public final static int worldXMax = 1023;
+	public final static int worldYMax = 767;
+}

@@ -1,0 +1,17 @@
+1426330802761	Delete element
+1426332397251	Delete element
+1426335624848	Rename field 'velocity'
+1426335662901	Rename method 'GetCurrentVelocity'
+1426335687982	Rename method 'SetVelocity'
+1426335703031	Rename method 'newVelocity'
+1426335814734	Rename field 'horzintalVelocity'
+1426335820949	Rename field 'horizntalVelocity'
+1426346366675	Rename method 'SetHorizontalVelocity'
+1426348899471	Rename method 'getYAfterMove'
+1426350517500	Rename field 'woldXMin'
+1426353933663	Rename method 'StartMove'
+1426353951151	Rename method 'EndMove'
+1426355054670	Rename method 'IsDucking'
+1426358488402	Copy method
+1426366691245	Rename method 'setOrientationRight'
+1426366702782	Rename method 'setOrientationLeft'

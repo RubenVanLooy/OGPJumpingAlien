@@ -1,0 +1,13 @@
+package jumpingalien.model;
+
+public class Constants {
+
+	public final static int worldXMax = 1023;
+	public final static int worldYMax = 767;
+	public final static double mazubHorizontalAcceleration = 0.9;
+	public final static double mazubMaxHorizontalVelocityNoDuck = 3.;
+	public final static double mazubMaxHorizontalVelocityDucking = 1.;
+	public final static double mazubInitialHorizontalVelocity = 1.;
+	public final static double mazubInitialVerticalVelocity = 8.;
+	public final static double mazubVerticalAcceleration = -10.;
+}
